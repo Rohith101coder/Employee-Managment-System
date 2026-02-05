@@ -1,5 +1,8 @@
 package com.example.ems_backend.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.ems_backend.dto.EmployeeDto;
@@ -31,7 +34,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee=employeeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Employee is not exsist with given id:"+id));
         return EmployeeMapper.mapToEmployeeDto(employee);
     }
+    @Override
+    public List<EmployeeDto> getAllEmployees() {
+       List<Employee> list=employeeRepository.findAll();
+       List<EmployeeDto> listdto=new ArrayList<>();
+       for(int i=0;i<list.size();i++){
+        listdto.add(EmployeeMapper.mapToEmployeeDto(list.get(i)));
+       }
+       return listdto;
+    }
+    @Override
+    public EmployeeDto updateEmployeeById(Long empId,EmployeeDto employeeDto) {
+       Employee employee=employeeRepository.findById(empId).orElseThrow(()->new ResourceNotFoundException("User not found"));
+       employee=EmployeeMapper.mapToEmployee(employeeDto);
+       employee=employeeRepository.save(employee);
+       employeeDto=EmployeeMapper.mapToEmployeeDto(employee);
+       return employeeDto;
+    }
 
+
+    
     
     
 
